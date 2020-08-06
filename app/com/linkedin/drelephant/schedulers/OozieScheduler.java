@@ -60,6 +60,18 @@ public class OozieScheduler implements Scheduler {
     private String workflowExecUrlTemplate;
     private String flowDefName;
 
+    static {
+        javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+            new javax.net.ssl.HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname,
+                    javax.net.ssl.SSLSession sslSession) {
+                    return true;
+                }
+            }
+        );
+    }
+
     public OozieScheduler(String appId, Properties properties, SchedulerConfigurationData schedulerConfData) {
         this(appId, properties, schedulerConfData, null);
     }
@@ -77,6 +89,20 @@ public class OozieScheduler implements Scheduler {
             appNameUniqueness = appNameUniquenessStr != null && Boolean.parseBoolean(appNameUniquenessStr);
 
             loadInfo(properties);
+            if(this.oozieClient==null){
+                logger.info("oozieClient is null.");
+            }
+            else{
+                logger.info("oozieClient: schedName '" + schedulerName + "'"
+                + "oozie-action-id '" + OOZIE_ACTION_ID + "'");
+                try{
+                   string sURL = this.oozieClient.getProtocolUrl();
+                   logger.info("oozieClient: getProtocalURL '" + sURL + "'");
+                }
+                catch (OozieClientException e) {
+                    logger.info("oozieClient getProtocal meets fault, means the server are not protocol compatible.");
+                }
+            }
         }
 
         // Use default value of data type

@@ -31,7 +31,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import javax.net.ssl.HttpsURLConnection;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Task level data mining for Tez Tasks from timeline server API
@@ -41,26 +43,42 @@ public class TezFetcher implements ElephantFetcher<TezApplicationData> {
 
   private static final Logger logger = Logger.getLogger(TezFetcher.class);
 
-  private static final String TIMELINE_SERVER_URL = "yarn.timeline-service.webapp.address";
+  private static final boolean bHttpsOnly = true;  // somehow check yarn.http.policy HTTPS_ONLY ?
+  private static final String TIMELINE_SERVER_URL = bHttpsOnly ? "yarn.timeline-service.webapp.https.address":"yarn.timeline-service.webapp.address";
 
   private URLFactory _urlFactory;
   private JSONFactory _jsonFactory;
-  private String _timelineWebAddr;
 
   private FetcherConfigurationData _fetcherConfigurationData;
 
-
+  static {
+    javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
+        new javax.net.ssl.HostnameVerifier(){
+            @Override
+            public boolean verify(String hostname,
+                javax.net.ssl.SSLSession sslSession) {
+              return true;
+            }
+        }
+    );
+  }
 
   public TezFetcher(FetcherConfigurationData fetcherConfData) throws IOException {
     this._fetcherConfigurationData = fetcherConfData;
     final String applicationHistoryAddr = new Configuration().get(TIMELINE_SERVER_URL);
-
+    try{
+      if(!applicationHistoryAddr.substring(0,4).equalsIgnoreCase("http")) {
+        applicationHistoryAddr = (bHttpsOnly ? "https://" : "http://") + applicationHistoryAddr;
+      }
+    }
+    catch (IndexOutOfBoundsException e) {
+      logger.info("TezFetcher get application abnormal url" + applicationHistoryAddr);
+    }
     //Connection validity checked using method verifyURL(_timelineWebAddr) inside URLFactory constructor;
     _urlFactory = new URLFactory(applicationHistoryAddr);
     logger.info("Connection success.");
 
     _jsonFactory = new JSONFactory();
-    _timelineWebAddr = "http://" + _timelineWebAddr + "/ws/v1/timeline/";
 
   }
 
@@ -146,8 +164,17 @@ public class TezFetcher implements ElephantFetcher<TezApplicationData> {
     private String _timelineWebAddr;
 
     private URLFactory(String hserverAddr) throws IOException {
-      _timelineWebAddr = "http://" + hserverAddr + "/ws/v1/timeline";
-      verifyURL(_timelineWebAddr);
+      _timelineWebAddr = hserverAddr + "/ws/v1/timeline";
+      try {
+        verifyURL(_timelineWebAddr);
+      }
+      catch(IOException e) {
+        logger.info("TezFetcher cannot verify URL:" + _timelineWebAddr);
+        logger.info(e.toString());
+
+        e.printStackTrace();
+        throw e;
+      }
     }
 
     private void verifyURL(String url) throws IOException {

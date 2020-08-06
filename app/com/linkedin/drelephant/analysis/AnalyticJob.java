@@ -314,7 +314,7 @@ public class AnalyticJob {
     List<HeuristicResult> analysisResults = new ArrayList<HeuristicResult>();
     if (data == null || data.isEmpty()) {
       // Example: a MR job has 0 mappers and 0 reducers
-      logger.info("No Data Received for analytic job: " + getAppId());
+      logger.info("No Data Received for analytic job: " + getAppId() + " " + getAppType().getName());
       analysisResults.add(HeuristicResult.NO_DATA);
     } else {
       List<Heuristic> heuristics = ElephantContext.instance().getHeuristicsForApplicationType(getAppType());
