@@ -175,6 +175,17 @@
 
   <heuristic>
     <applicationtype>mapreduce</applicationtype>
+    <heuristicname> My Rules </heuristicname>
+    <classname>com.linkedin.drelephant.mapreduce.heuristics.CcShuffleSortHeuristic</classname>
+    <viewname>views.html.help.mapreduce.helpCcShuffleSort</viewname>
+    <!--<params>
+      <runtime_severity_in_min>1, 5, 10, 30</runtime_severity_in_min>
+      <runtime_ratio_severity>1, 2, 4, 8</runtime_ratio_severity>
+    </params>-->
+  </heuristic>
+
+  <heuristic>
+    <applicationtype>mapreduce</applicationtype>
     <heuristicname>Mapper Skew</heuristicname>
     <classname>com.linkedin.drelephant.mapreduce.heuristics.MapperSkewHeuristic</classname>
     <viewname>views.html.help.mapreduce.helpMapperSkew</viewname>
@@ -207,6 +218,17 @@
       <short_runtime_severity_in_min>10, 4, 2, 1</short_runtime_severity_in_min>
       <long_runtime_severity_in_min>15, 30, 60, 120</long_runtime_severity_in_min>
       <num_tasks_severity>50, 101, 500, 1000</num_tasks_severity>
+    </params>-->
+  </heuristic>
+
+  <heuristic>
+    <applicationtype>mapreduce</applicationtype>
+    <heuristicname> My Rnd Rules </heuristicname>
+    <classname>com.linkedin.drelephant.mapreduce.heuristics.Cc2ShuffleSortHeuristic</classname>
+    <viewname>views.html.help.mapreduce.helpCcShuffleSort</viewname>
+    <!--<params>
+      <runtime_severity_in_min>1, 5, 10, 30</runtime_severity_in_min>
+      <runtime_ratio_severity>1, 2, 4, 8</runtime_ratio_severity>
     </params>-->
   </heuristic>
 
@@ -302,6 +324,7 @@
       <runtime_ratio_severity>1, 2, 4, 8</runtime_ratio_severity>
     </params>-->
   </heuristic>
+
 
   <heuristic>
     <applicationtype>mapreduce</applicationtype>
