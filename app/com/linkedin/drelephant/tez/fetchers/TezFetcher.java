@@ -33,7 +33,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import javax.net.ssl.HttpsURLConnection;
 import java.util.*;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 /**
  * Task level data mining for Tez Tasks from timeline server API
@@ -65,7 +65,7 @@ public class TezFetcher implements ElephantFetcher<TezApplicationData> {
 
   public TezFetcher(FetcherConfigurationData fetcherConfData) throws IOException {
     this._fetcherConfigurationData = fetcherConfData;
-    final String applicationHistoryAddr = new Configuration().get(TIMELINE_SERVER_URL);
+    String applicationHistoryAddr = new Configuration().get(TIMELINE_SERVER_URL);
     try{
       if(!applicationHistoryAddr.substring(0,4).equalsIgnoreCase("http")) {
         applicationHistoryAddr = (bHttpsOnly ? "https://" : "http://") + applicationHistoryAddr;

@@ -96,7 +96,7 @@ public class OozieScheduler implements Scheduler {
                 logger.info("oozieClient: schedName '" + schedulerName + "'"
                 + "oozie-action-id '" + OOZIE_ACTION_ID + "'");
                 try{
-                   string sURL = this.oozieClient.getProtocolUrl();
+                   String sURL = this.oozieClient.getProtocolUrl();
                    logger.info("oozieClient: getProtocalURL '" + sURL + "'");
                 }
                 catch (OozieClientException e) {
